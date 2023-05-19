@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import session from "express-session";
+import passport from "passport";
 //
 const app = express();
 dotenv.config();
@@ -23,6 +24,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views"));
 //
 app.use(authRoutes);
+app.use(passport.authenticate("session"));
 app.use(indexRoutes);
 
 const PORT = process.env.PORT;
