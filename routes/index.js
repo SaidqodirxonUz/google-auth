@@ -19,6 +19,15 @@ router.get("/about", (req, res) => {
   res.render("about");
 });
 
+router.get("/logout", (req, res) => {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
+
 export default router;
 
 // realcoderuz.onrender.com/about

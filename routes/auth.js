@@ -1,8 +1,9 @@
 import express from "express";
 import passport from "passport";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import { Strategy as Strategy } from "passport-google-oauth20";
 import { randomUUID, verify } from "crypto";
 import dotenv from "dotenv";
+import { error } from "console";
 
 dotenv.config();
 const users = [];
@@ -10,33 +11,29 @@ const users = [];
 const router = express.Router();
 
 passport.use(
-  new GoogleStrategy(
+  new Strategy(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL:
-        "http://localhost:8000/auth/google" &&
-        "https://realcoderuz.onrender.com/auth/google",
+      callbackURL: "http://localhost:8000/auth/google",
     },
-    function verify(accesToken, refreshToken, done) {
+    function verify(accesToken, refreshToken, profile, done) {
       const exestingUser = users.find((u) => u.googleId === profile.id);
-      console.log(profile);
 
       if (exestingUser) {
         return done(null, {
           id: exestingUser.id,
-          fullName: profile,
+          fullname: exestingUser.displayName,
         });
-
-        const NewUser = {
-          id: randomUUID,
-          username: profile.displayName,
-          googleId: profile.id,
-        };
-
-        users.push(NewUser);
-        done(null, { id: NewUser.id, googleId: newUser.googleId });
       }
+
+      const newUser = {
+        id: randomUUID,
+        username: profile.displayName,
+        googleId: profile.id,
+      };
+
+      //
     }
   )
 );
@@ -60,10 +57,7 @@ router.get("/register", (req, res) => {
 
 router.get(
   "/auth/isGoogle",
-  passport.authenticate("google", { scope: ["profile"] }),
-  (req, res) => {
-    res.redirect("/");
-  }
+  passport.authenticate("google", { scope: ["profile"] })
 );
 
 router.get(
@@ -74,21 +68,22 @@ router.get(
   })
 );
 
-// router.post("/register", (req, res) => {
-//   const { username, password } = req.body;
-//   const exestingUser = users.find((u) => u.username === username);
-//   if (exestingUser) {
-//     return res.sendStatus(400);
-//   }
+router.post("/register", (req, res) => {
+  const { username, password } = req.body;
 
-//   users.push({
-//     id: randomUUID,
-//     username,
-//     password,
-//   });
+  const exestingUser = users.find((u) => u.username === username);
+  if (exestingUser) {
+    return res.sendStatus(400);
+  }
 
-//   res.redirect("/login");
-// });
+  users.push({
+    id: randomUUID,
+    username,
+    password,
+  });
+
+  res.redirect("/login");
+});
 
 export default router;
 

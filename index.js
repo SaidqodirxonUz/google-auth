@@ -23,8 +23,8 @@ import indexRoutes from "./routes/index.js";
 app.set("view engine", "ejs");
 app.set("views", path.join(process.cwd(), "views"));
 //
-app.use(authRoutes);
 app.use(passport.authenticate("session"));
+app.use(authRoutes);
 app.use(indexRoutes);
 
 const PORT = process.env.PORT;
