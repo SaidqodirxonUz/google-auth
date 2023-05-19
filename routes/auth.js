@@ -19,8 +19,24 @@ passport.use(
         "https://realcoderuz.onrender.com/auth/google",
     },
     function verify(accesToken, refreshToken, done) {
+      const exestingUser = users.find((u) => u.googleId === profile.id);
       console.log(profile);
-      done("Error");
+
+      if (exestingUser) {
+        return done(null, {
+          id: exestingUser.id,
+          fullName: profile,
+        });
+
+        const NewUser = {
+          id: randomUUID,
+          username: profile.displayName,
+          googleId: profile.id,
+        };
+
+        users.push(NewUser);
+        done(null, { id: NewUser.id, googleId: newUser.googleId });
+      }
     }
   )
 );
