@@ -74,21 +74,21 @@ router.get(
   })
 );
 
-router.post("/register", (req, res) => {
-  const { username, password } = req.body;
-  const exestingUser = users.find((u) => u.username === username);
-  if (exestingUser) {
-    return res.sendStatus(400);
-  }
+// router.post("/register", (req, res) => {
+//   const { username, password } = req.body;
+//   const exestingUser = users.find((u) => u.username === username);
+//   if (exestingUser) {
+//     return res.sendStatus(400);
+//   }
 
-  users.push({
-    id: randomUUID,
-    username,
-    password,
-  });
+//   users.push({
+//     id: randomUUID,
+//     username,
+//     password,
+//   });
 
-  res.redirect("/login");
-});
+//   res.redirect("/login");
+// });
 
 export default router;
 
