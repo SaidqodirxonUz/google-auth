@@ -15,7 +15,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "http://localhost:8000/auth/google",
+      callbackURL: process.env.CALLBACK_URL,
     },
     function verify(accesToken, refreshToken, profile, done) {
       const exestingUser = users.find((u) => u.googleId === profile.id);
@@ -28,12 +28,16 @@ passport.use(
       }
 
       const newUser = {
-        id: randomUUID,
+        id: randomUUID(),
         username: profile.displayName,
         googleId: profile.id,
       };
 
-      //
+      users.push(newUser);
+      done(null, {
+        id: newUser.id,
+        fullName: newUser.username,
+      });
     }
   )
 );
@@ -61,7 +65,7 @@ router.get(
 );
 
 router.get(
-  "/auth/google",
+  "/auth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login",
     successRedirect: "/",
